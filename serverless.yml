@@ -1,0 +1,117 @@
+service: reto-backend
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  region: us-east-2
+  environment:
+    NODE_ENV: production
+    PEOPLE_TABLE: ${self:service}-${sls:stage}-PeopleTable
+    HISTORY_TABLE: ${self:service}-${sls:stage}-HistoryTable
+    EVENT_BUS_NAME: ${self:service}-${sls:stage}-EventBus
+
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - "dynamodb:PutItem"
+        - "dynamodb:GetItem"
+        - "dynamodb:UpdateItem"
+        - "dynamodb:DeleteItem"
+        - "dynamodb:Scan"
+        - "events:PutEvents"
+      Resource: 
+        - "arn:aws:dynamodb:${self:provider.region}:*:table/${self:service}-${sls:stage}-PeopleTable"
+        - "arn:aws:dynamodb:${self:provider.region}:*:table/${self:service}-${sls:stage}-HistoryTable"
+        - "arn:aws:events:${self:provider.region}:${aws:accountId}:event-bus/${self:service}-${sls:stage}-EventBus"  
+        
+plugins:
+  - serverless-offline
+
+custom:
+  esbuild:
+    bundle: true
+    minify: true
+    sourcemap: false
+    target: node18  
+
+package:
+  individually: true
+  exclude:
+    - node_modules/.bin/**
+    - node_modules/**/*.md
+    - node_modules/**/*.test.js
+    - node_modules/**/*.debug.js
+    - node_modules/**/*.spec.js
+    - node_modules/**/*.ts
+    - node_modules/**/*.tsbuildinfo
+    - node_modules/**/test/**
+    - node_modules/**/spec/**
+    - node_modules/**/docs/**
+    - node_modules/**/coverage/**
+    - node_modules/**/.cache/**
+    - node_modules/**/.eslintrc.js
+    - node_modules/**/.prettierrc
+    - node_modules/**/tsconfig.json
+    - node_modules/**/tsconfig.build.json
+    - node_modules/**/jestconfig.json
+
+functions:
+  api:
+    handler: dist/serverless.handler
+    events:
+       - http:
+          method: ANY
+          path: api-softtek/{proxy+}
+          cors: true
+  eventHandler:
+    handler: dist/serverless.eventHandler
+    events:
+      - eventBridge:
+          pattern:
+            source:
+              - reto-backend
+            detail-type:
+              - request.history
+
+
+resources:
+  Resources:
+    PeopleTable:
+      Type: "AWS::DynamoDB::Table"
+      Properties:
+        TableName: ${self:service}-${sls:stage}-PeopleTable
+        AttributeDefinitions:
+          - AttributeName: "id"
+            AttributeType: "S"
+          - AttributeName: "status"  
+            AttributeType: "S"
+        KeySchema:
+          - AttributeName: "id"
+            KeyType: "HASH"
+        BillingMode: PAY_PER_REQUEST 
+        TimeToLiveSpecification:
+          AttributeName: "ttl"
+          Enabled: true
+        GlobalSecondaryIndexes:
+          - IndexName: "status-index"
+            KeySchema:
+              - AttributeName: "status"
+                KeyType: "HASH"
+            Projection:
+              ProjectionType: "ALL"
+    HistoryTable:
+      Type: "AWS::DynamoDB::Table"
+      Properties:
+        TableName: ${self:service}-${sls:stage}-HistoryTable
+        AttributeDefinitions:
+          - AttributeName: "requestId"
+            AttributeType: "S"
+        KeySchema:
+          - AttributeName: "requestId"
+            KeyType: "HASH"
+        BillingMode: PAY_PER_REQUEST
+       
+    EventBus:
+      Type: "AWS::Events::EventBus"
+      Properties:
+        Name: ${self:provider.environment.EVENT_BUS_NAME}

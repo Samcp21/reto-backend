@@ -1,0 +1,2420 @@
+{
+  "C:\\Users\\l4fv\\Documents\\Pruebas Tecnicas\\reto-backend": {
+    "versionSfCore": null,
+    "versionFramework": "4.4.7",
+    "isWithinCompose": false,
+    "isCompose": false,
+    "composeOrgName": null,
+    "composeResolverProviders": {
+      "default-aws-credential-resolver": "<REDACTED>",
+      "self": {
+        "instance": {
+          "credentials": "<REDACTED>",
+          "serviceConfigFile": {
+            "service": "reto-backend",
+            "provider": {
+              "name": "aws",
+              "runtime": "nodejs18.x",
+              "region": "us-east-2",
+              "environment": {
+                "NODE_ENV": "production",
+                "PEOPLE_TABLE": "reto-backend-dev-PeopleTable",
+                "HISTORY_TABLE": "reto-backend-dev-HistoryTable",
+                "EVENT_BUS_NAME": "reto-backend-dev-EventBus"
+              },
+              "iamRoleStatements": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "dynamodb:PutItem",
+                    "dynamodb:GetItem",
+                    "dynamodb:UpdateItem",
+                    "dynamodb:DeleteItem",
+                    "dynamodb:Scan",
+                    "events:PutEvents"
+                  ],
+                  "Resource": [
+                    "arn:aws:dynamodb:us-east-2:*:table/reto-backend-dev-PeopleTable",
+                    "arn:aws:dynamodb:us-east-2:*:table/reto-backend-dev-HistoryTable",
+                    "arn:aws:events:us-east-2:058264497369:event-bus/reto-backend-dev-EventBus"
+                  ]
+                }
+              ],
+              "stage": "dev",
+              "versionFunctions": true,
+              "compiledCloudFormationTemplate": {
+                "AWSTemplateFormatVersion": "2010-09-09",
+                "Description": "The AWS CloudFormation template for this Serverless application",
+                "Resources": {
+                  "ApiLogGroup": {
+                    "Type": "AWS::Logs::LogGroup",
+                    "Properties": {
+                      "LogGroupName": "/aws/lambda/reto-backend-dev-api"
+                    }
+                  },
+                  "EventHandlerLogGroup": {
+                    "Type": "AWS::Logs::LogGroup",
+                    "Properties": {
+                      "LogGroupName": "/aws/lambda/reto-backend-dev-eventHandler"
+                    }
+                  },
+                  "IamRoleLambdaExecution": {
+                    "Type": "AWS::IAM::Role",
+                    "Properties": {
+                      "AssumeRolePolicyDocument": {
+                        "Version": "2012-10-17",
+                        "Statement": [
+                          {
+                            "Effect": "Allow",
+                            "Principal": {
+                              "Service": [
+                                "lambda.amazonaws.com"
+                              ]
+                            },
+                            "Action": [
+                              "sts:AssumeRole"
+                            ]
+                          }
+                        ]
+                      },
+                      "Policies": [
+                        {
+                          "PolicyName": {
+                            "Fn::Join": [
+                              "-",
+                              [
+                                "reto-backend",
+                                "dev",
+                                "lambda"
+                              ]
+                            ]
+                          },
+                          "PolicyDocument": {
+                            "Version": "2012-10-17",
+                            "Statement": [
+                              {
+                                "Effect": "Allow",
+                                "Action": [
+                                  "logs:CreateLogStream",
+                                  "logs:CreateLogGroup",
+                                  "logs:TagResource"
+                                ],
+                                "Resource": [
+                                  {
+                                    "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/reto-backend-dev*:*"
+                                  }
+                                ]
+                              },
+                              {
+                                "Effect": "Allow",
+                                "Action": [
+                                  "logs:PutLogEvents"
+                                ],
+                                "Resource": [
+                                  {
+                                    "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/reto-backend-dev*:*:*"
+                                  }
+                                ]
+                              },
+                              {
+                                "Effect": "Allow",
+                                "Action": [
+                                  "dynamodb:PutItem",
+                                  "dynamodb:GetItem",
+                                  "dynamodb:UpdateItem",
+                                  "dynamodb:DeleteItem",
+                                  "dynamodb:Scan",
+                                  "events:PutEvents"
+                                ],
+                                "Resource": [
+                                  "arn:aws:dynamodb:us-east-2:*:table/reto-backend-dev-PeopleTable",
+                                  "arn:aws:dynamodb:us-east-2:*:table/reto-backend-dev-HistoryTable",
+                                  "arn:aws:events:us-east-2:058264497369:event-bus/reto-backend-dev-EventBus"
+                                ]
+                              }
+                            ]
+                          }
+                        }
+                      ],
+                      "Path": "/",
+                      "RoleName": {
+                        "Fn::Join": [
+                          "-",
+                          [
+                            "reto-backend",
+                            "dev",
+                            {
+                              "Ref": "AWS::Region"
+                            },
+                            "lambdaRole"
+                          ]
+                        ]
+                      }
+                    }
+                  },
+                  "ApiLambdaFunction": {
+                    "Type": "AWS::Lambda::Function",
+                    "Properties": {
+                      "Code": {
+                        "S3Bucket": "serverless-framework-deployments-us-east-2-5aaba69b-62a2",
+                        "S3Key": "serverless/reto-backend/dev/1731300635781-2024-11-11T04:50:35.781Z/api.zip"
+                      },
+                      "Handler": "dist/serverless.handler",
+                      "Runtime": "nodejs18.x",
+                      "FunctionName": "reto-backend-dev-api",
+                      "MemorySize": 1024,
+                      "Timeout": 6,
+                      "Environment": {
+                        "Variables": {
+                          "NODE_ENV": "production",
+                          "PEOPLE_TABLE": "reto-backend-dev-PeopleTable",
+                          "HISTORY_TABLE": "reto-backend-dev-HistoryTable",
+                          "EVENT_BUS_NAME": "reto-backend-dev-EventBus"
+                        }
+                      },
+                      "Role": {
+                        "Fn::GetAtt": [
+                          "IamRoleLambdaExecution",
+                          "Arn"
+                        ]
+                      }
+                    },
+                    "DependsOn": [
+                      "ApiLogGroup"
+                    ]
+                  },
+                  "EventHandlerLambdaFunction": {
+                    "Type": "AWS::Lambda::Function",
+                    "Properties": {
+                      "Code": {
+                        "S3Bucket": "serverless-framework-deployments-us-east-2-5aaba69b-62a2",
+                        "S3Key": "serverless/reto-backend/dev/1731300635781-2024-11-11T04:50:35.781Z/eventHandler.zip"
+                      },
+                      "Handler": "dist/serverless.eventHandler",
+                      "Runtime": "nodejs18.x",
+                      "FunctionName": "reto-backend-dev-eventHandler",
+                      "MemorySize": 1024,
+                      "Timeout": 6,
+                      "Environment": {
+                        "Variables": {
+                          "NODE_ENV": "production",
+                          "PEOPLE_TABLE": "reto-backend-dev-PeopleTable",
+                          "HISTORY_TABLE": "reto-backend-dev-HistoryTable",
+                          "EVENT_BUS_NAME": "reto-backend-dev-EventBus"
+                        }
+                      },
+                      "Role": {
+                        "Fn::GetAtt": [
+                          "IamRoleLambdaExecution",
+                          "Arn"
+                        ]
+                      }
+                    },
+                    "DependsOn": [
+                      "EventHandlerLogGroup"
+                    ]
+                  },
+                  "ApiLambdaVersion9kBle4q0LuGy2M46YRXL1UOsC29BYVEQfucfI1GEk": {
+                    "Type": "AWS::Lambda::Version",
+                    "DeletionPolicy": "Retain",
+                    "Properties": {
+                      "FunctionName": {
+                        "Ref": "ApiLambdaFunction"
+                      },
+                      "CodeSha256": "ie2o35UoMBTq3HLME98qlIjNLsisbG+VzjrqX7+TcNc="
+                    }
+                  },
+                  "EventHandlerLambdaVersionpkOP8CAWNfJ4w3NQbtUpFuvBmFIIvJdt6l3TzGJdI": {
+                    "Type": "AWS::Lambda::Version",
+                    "DeletionPolicy": "Retain",
+                    "Properties": {
+                      "FunctionName": {
+                        "Ref": "EventHandlerLambdaFunction"
+                      },
+                      "CodeSha256": "ie2o35UoMBTq3HLME98qlIjNLsisbG+VzjrqX7+TcNc="
+                    }
+                  },
+                  "ApiGatewayRestApi": {
+                    "Type": "AWS::ApiGateway::RestApi",
+                    "Properties": {
+                      "Name": "dev-reto-backend",
+                      "EndpointConfiguration": {
+                        "Types": [
+                          "EDGE"
+                        ]
+                      },
+                      "Policy": ""
+                    }
+                  },
+                  "ApiGatewayResourceApiDashsofttek": {
+                    "Type": "AWS::ApiGateway::Resource",
+                    "Properties": {
+                      "ParentId": {
+                        "Fn::GetAtt": [
+                          "ApiGatewayRestApi",
+                          "RootResourceId"
+                        ]
+                      },
+                      "PathPart": "api-softtek",
+                      "RestApiId": {
+                        "Ref": "ApiGatewayRestApi"
+                      }
+                    }
+                  },
+                  "ApiGatewayResourceApiDashsofttekProxyVar": {
+                    "Type": "AWS::ApiGateway::Resource",
+                    "Properties": {
+                      "ParentId": {
+                        "Ref": "ApiGatewayResourceApiDashsofttek"
+                      },
+                      "PathPart": "{proxy+}",
+                      "RestApiId": {
+                        "Ref": "ApiGatewayRestApi"
+                      }
+                    }
+                  },
+                  "ApiGatewayMethodApiDashsofttekProxyVarOptions": {
+                    "Type": "AWS::ApiGateway::Method",
+                    "Properties": {
+                      "AuthorizationType": "NONE",
+                      "HttpMethod": "OPTIONS",
+                      "MethodResponses": [
+                        {
+                          "StatusCode": "200",
+                          "ResponseParameters": {
+                            "method.response.header.Access-Control-Allow-Origin": true,
+                            "method.response.header.Access-Control-Allow-Headers": true,
+                            "method.response.header.Access-Control-Allow-Methods": true
+                          },
+                          "ResponseModels": {}
+                        }
+                      ],
+                      "RequestParameters": {},
+                      "Integration": {
+                        "Type": "MOCK",
+                        "RequestTemplates": {
+                          "application/json": "{statusCode:200}"
+                        },
+                        "ContentHandling": "CONVERT_TO_TEXT",
+                        "IntegrationResponses": [
+                          {
+                            "StatusCode": "200",
+                            "ResponseParameters": {
+                              "method.response.header.Access-Control-Allow-Origin": "'*'",
+                              "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent,X-Amzn-Trace-Id'",
+                              "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,DELETE,GET,HEAD,PATCH,POST,PUT'"
+                            },
+                            "ResponseTemplates": {
+                              "application/json": ""
+                            }
+                          }
+                        ]
+                      },
+                      "ResourceId": {
+                        "Ref": "ApiGatewayResourceApiDashsofttekProxyVar"
+                      },
+                      "RestApiId": {
+                        "Ref": "ApiGatewayRestApi"
+                      }
+                    }
+                  },
+                  "ApiGatewayMethodApiDashsofttekProxyVarAny": {
+                    "Type": "AWS::ApiGateway::Method",
+                    "Properties": {
+                      "HttpMethod": "ANY",
+                      "RequestParameters": {},
+                      "ResourceId": {
+                        "Ref": "ApiGatewayResourceApiDashsofttekProxyVar"
+                      },
+                      "RestApiId": {
+                        "Ref": "ApiGatewayRestApi"
+                      },
+                      "ApiKeyRequired": "<REDACTED>",
+                      "AuthorizationType": "NONE",
+                      "Integration": {
+                        "IntegrationHttpMethod": "POST",
+                        "Type": "AWS_PROXY",
+                        "Uri": {
+                          "Fn::Join": [
+                            "",
+                            [
+                              "arn:",
+                              {
+                                "Ref": "AWS::Partition"
+                              },
+                              ":apigateway:",
+                              {
+                                "Ref": "AWS::Region"
+                              },
+                              ":lambda:path/2015-03-31/functions/",
+                              {
+                                "Fn::GetAtt": [
+                                  "ApiLambdaFunction",
+                                  "Arn"
+                                ]
+                              },
+                              "/invocations"
+                            ]
+                          ]
+                        }
+                      },
+                      "MethodResponses": []
+                    },
+                    "DependsOn": [
+                      "ApiLambdaPermissionApiGateway"
+                    ]
+                  },
+                  "ApiGatewayDeployment1731300619058": {
+                    "Type": "AWS::ApiGateway::Deployment",
+                    "Properties": {
+                      "RestApiId": {
+                        "Ref": "ApiGatewayRestApi"
+                      },
+                      "StageName": "dev"
+                    },
+                    "DependsOn": [
+                      "ApiGatewayMethodApiDashsofttekProxyVarOptions",
+                      "ApiGatewayMethodApiDashsofttekProxyVarAny"
+                    ]
+                  },
+                  "ApiLambdaPermissionApiGateway": {
+                    "Type": "AWS::Lambda::Permission",
+                    "Properties": {
+                      "FunctionName": {
+                        "Fn::GetAtt": [
+                          "ApiLambdaFunction",
+                          "Arn"
+                        ]
+                      },
+                      "Action": "lambda:InvokeFunction",
+                      "Principal": "apigateway.amazonaws.com",
+                      "SourceArn": {
+                        "Fn::Join": [
+                          "",
+                          [
+                            "arn:",
+                            {
+                              "Ref": "AWS::Partition"
+                            },
+                            ":execute-api:",
+                            {
+                              "Ref": "AWS::Region"
+                            },
+                            ":",
+                            {
+                              "Ref": "AWS::AccountId"
+                            },
+                            ":",
+                            {
+                              "Ref": "ApiGatewayRestApi"
+                            },
+                            "/*/*"
+                          ]
+                        ]
+                      }
+                    }
+                  },
+                  "RetobackenddeveventHandlerrule1EventBridgeRule": {
+                    "Type": "AWS::Events::Rule",
+                    "Properties": {
+                      "EventPattern": {
+                        "source": [
+                          "reto-backend"
+                        ],
+                        "detail-type": [
+                          "request.history"
+                        ]
+                      },
+                      "Name": "reto-backend-dev-eventHandler-rule-1",
+                      "State": "ENABLED",
+                      "Targets": [
+                        {
+                          "Arn": {
+                            "Fn::GetAtt": [
+                              "EventHandlerLambdaFunction",
+                              "Arn"
+                            ]
+                          },
+                          "Id": "reto-backend-dev-eventHandler-rule-1-target"
+                        }
+                      ]
+                    }
+                  },
+                  "EventHandlerEventBridgeLambdaPermission1": {
+                    "Type": "AWS::Lambda::Permission",
+                    "Properties": {
+                      "Action": "lambda:InvokeFunction",
+                      "FunctionName": {
+                        "Fn::GetAtt": [
+                          "EventHandlerLambdaFunction",
+                          "Arn"
+                        ]
+                      },
+                      "Principal": "events.amazonaws.com",
+                      "SourceArn": {
+                        "Fn::Join": [
+                          ":",
+                          [
+                            "arn",
+                            {
+                              "Ref": "AWS::Partition"
+                            },
+                            "events",
+                            {
+                              "Ref": "AWS::Region"
+                            },
+                            {
+                              "Ref": "AWS::AccountId"
+                            },
+                            {
+                              "Fn::Join": [
+                                "/",
+                                [
+                                  "rule",
+                                  "reto-backend-dev-eventHandler-rule-1"
+                                ]
+                              ]
+                            }
+                          ]
+                        ]
+                      }
+                    }
+                  },
+                  "PeopleTable": {
+                    "Type": "AWS::DynamoDB::Table",
+                    "Properties": {
+                      "TableName": "reto-backend-dev-PeopleTable",
+                      "AttributeDefinitions": [
+                        {
+                          "AttributeName": "id",
+                          "AttributeType": "S"
+                        },
+                        {
+                          "AttributeName": "status",
+                          "AttributeType": "S"
+                        }
+                      ],
+                      "KeySchema": [
+                        {
+                          "AttributeName": "id",
+                          "KeyType": "HASH"
+                        }
+                      ],
+                      "BillingMode": "PAY_PER_REQUEST",
+                      "TimeToLiveSpecification": {
+                        "AttributeName": "ttl",
+                        "Enabled": true
+                      },
+                      "GlobalSecondaryIndexes": [
+                        {
+                          "IndexName": "status-index",
+                          "KeySchema": [
+                            {
+                              "AttributeName": "status",
+                              "KeyType": "HASH"
+                            }
+                          ],
+                          "Projection": {
+                            "ProjectionType": "ALL"
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "HistoryTable": {
+                    "Type": "AWS::DynamoDB::Table",
+                    "Properties": {
+                      "TableName": "reto-backend-dev-HistoryTable",
+                      "AttributeDefinitions": [
+                        {
+                          "AttributeName": "requestId",
+                          "AttributeType": "S"
+                        }
+                      ],
+                      "KeySchema": [
+                        {
+                          "AttributeName": "requestId",
+                          "KeyType": "HASH"
+                        }
+                      ],
+                      "BillingMode": "PAY_PER_REQUEST"
+                    }
+                  },
+                  "EventBus": {
+                    "Type": "AWS::Events::EventBus",
+                    "Properties": {
+                      "Name": "reto-backend-dev-EventBus"
+                    }
+                  }
+                },
+                "Outputs": {
+                  "ServerlessDeploymentBucketName": {
+                    "Value": "serverless-framework-deployments-us-east-2-5aaba69b-62a2",
+                    "Export": {
+                      "Name": "sls-reto-backend-dev-ServerlessDeploymentBucketName"
+                    }
+                  },
+                  "ApiLambdaFunctionQualifiedArn": {
+                    "Description": "Current Lambda function version",
+                    "Value": {
+                      "Ref": "ApiLambdaVersion9kBle4q0LuGy2M46YRXL1UOsC29BYVEQfucfI1GEk"
+                    },
+                    "Export": {
+                      "Name": "sls-reto-backend-dev-ApiLambdaFunctionQualifiedArn"
+                    }
+                  },
+                  "EventHandlerLambdaFunctionQualifiedArn": {
+                    "Description": "Current Lambda function version",
+                    "Value": {
+                      "Ref": "EventHandlerLambdaVersionpkOP8CAWNfJ4w3NQbtUpFuvBmFIIvJdt6l3TzGJdI"
+                    },
+                    "Export": {
+                      "Name": "sls-reto-backend-dev-EventHandlerLambdaFunctionQualifiedArn"
+                    }
+                  },
+                  "ServiceEndpoint": {
+                    "Description": "URL of the service endpoint",
+                    "Value": {
+                      "Fn::Join": [
+                        "",
+                        [
+                          "https://",
+                          {
+                            "Ref": "ApiGatewayRestApi"
+                          },
+                          ".execute-api.",
+                          {
+                            "Ref": "AWS::Region"
+                          },
+                          ".",
+                          {
+                            "Ref": "AWS::URLSuffix"
+                          },
+                          "/dev"
+                        ]
+                      ]
+                    },
+                    "Export": {
+                      "Name": "sls-reto-backend-dev-ServiceEndpoint"
+                    }
+                  }
+                }
+              },
+              "vpc": {}
+            },
+            "plugins": [
+              "serverless-offline"
+            ],
+            "custom": {
+              "esbuild": {
+                "bundle": true,
+                "minify": true,
+                "sourcemap": false,
+                "target": "node18"
+              }
+            },
+            "package": {
+              "individually": true,
+              "exclude": [
+                "node_modules/.bin/**",
+                "node_modules/**/*.md",
+                "node_modules/**/*.test.js",
+                "node_modules/**/*.debug.js",
+                "node_modules/**/*.spec.js",
+                "node_modules/**/*.ts",
+                "node_modules/**/*.tsbuildinfo",
+                "node_modules/**/test/**",
+                "node_modules/**/spec/**",
+                "node_modules/**/docs/**",
+                "node_modules/**/coverage/**",
+                "node_modules/**/.cache/**",
+                "node_modules/**/.eslintrc.js",
+                "node_modules/**/.prettierrc",
+                "node_modules/**/tsconfig.json",
+                "node_modules/**/tsconfig.build.json",
+                "node_modules/**/jestconfig.json"
+              ],
+              "artifactsS3KeyDirname": "serverless/reto-backend/dev/code-artifacts",
+              "deploymentBucket": "serverless-framework-deployments-us-east-2-5aaba69b-62a2",
+              "artifactDirectoryName": "serverless/reto-backend/dev/1731300635781-2024-11-11T04:50:35.781Z"
+            },
+            "functions": {
+              "api": {
+                "handler": "dist/serverless.handler",
+                "events": [
+                  {
+                    "http": {
+                      "method": "any",
+                      "path": "api-softtek/{proxy+}",
+                      "cors": {
+                        "origin": "*",
+                        "methods": [
+                          "OPTIONS",
+                          "ANY"
+                        ],
+                        "headers": [
+                          "Content-Type",
+                          "X-Amz-Date",
+                          "Authorization",
+                          "X-Api-Key",
+                          "X-Amz-Security-Token",
+                          "X-Amz-User-Agent",
+                          "X-Amzn-Trace-Id"
+                        ],
+                        "allowCredentials": "<REDACTED>"
+                      },
+                      "integration": "AWS_PROXY"
+                    }
+                  }
+                ],
+                "name": "reto-backend-dev-api",
+                "package": {
+                  "artifact": "C:\\Users\\l4fv\\Documents\\Pruebas Tecnicas\\reto-backend\\.serverless\\api.zip"
+                },
+                "memory": 1024,
+                "timeout": 6,
+                "runtime": "nodejs18.x",
+                "vpc": {},
+                "versionLogicalId": "ApiLambdaVersion9kBle4q0LuGy2M46YRXL1UOsC29BYVEQfucfI1GEk"
+              },
+              "eventHandler": {
+                "handler": "dist/serverless.eventHandler",
+                "events": [
+                  {
+                    "eventBridge": {
+                      "pattern": {
+                        "source": [
+                          "reto-backend"
+                        ],
+                        "detail-type": [
+                          "request.history"
+                        ]
+                      }
+                    }
+                  }
+                ],
+                "name": "reto-backend-dev-eventHandler",
+                "package": {
+                  "artifact": "C:\\Users\\l4fv\\Documents\\Pruebas Tecnicas\\reto-backend\\.serverless\\eventHandler.zip"
+                },
+                "memory": 1024,
+                "timeout": 6,
+                "runtime": "nodejs18.x",
+                "vpc": {},
+                "versionLogicalId": "EventHandlerLambdaVersionpkOP8CAWNfJ4w3NQbtUpFuvBmFIIvJdt6l3TzGJdI"
+              }
+            },
+            "resources": {
+              "Resources": {
+                "PeopleTable": {
+                  "Type": "AWS::DynamoDB::Table",
+                  "Properties": {
+                    "TableName": "reto-backend-dev-PeopleTable",
+                    "AttributeDefinitions": [
+                      {
+                        "AttributeName": "id",
+                        "AttributeType": "S"
+                      },
+                      {
+                        "AttributeName": "status",
+                        "AttributeType": "S"
+                      }
+                    ],
+                    "KeySchema": [
+                      {
+                        "AttributeName": "id",
+                        "KeyType": "HASH"
+                      }
+                    ],
+                    "BillingMode": "PAY_PER_REQUEST",
+                    "TimeToLiveSpecification": {
+                      "AttributeName": "ttl",
+                      "Enabled": true
+                    },
+                    "GlobalSecondaryIndexes": [
+                      {
+                        "IndexName": "status-index",
+                        "KeySchema": [
+                          {
+                            "AttributeName": "status",
+                            "KeyType": "HASH"
+                          }
+                        ],
+                        "Projection": {
+                          "ProjectionType": "ALL"
+                        }
+                      }
+                    ]
+                  }
+                },
+                "HistoryTable": {
+                  "Type": "AWS::DynamoDB::Table",
+                  "Properties": {
+                    "TableName": "reto-backend-dev-HistoryTable",
+                    "AttributeDefinitions": [
+                      {
+                        "AttributeName": "requestId",
+                        "AttributeType": "S"
+                      }
+                    ],
+                    "KeySchema": [
+                      {
+                        "AttributeName": "requestId",
+                        "KeyType": "HASH"
+                      }
+                    ],
+                    "BillingMode": "PAY_PER_REQUEST"
+                  }
+                },
+                "EventBus": {
+                  "Type": "AWS::Events::EventBus",
+                  "Properties": {
+                    "Name": "reto-backend-dev-EventBus"
+                  }
+                }
+              },
+              "Outputs": {}
+            }
+          },
+          "configFileDirPath": "C:\\Users\\l4fv\\Documents\\Pruebas Tecnicas\\reto-backend",
+          "config": {
+            "type": "self"
+          },
+          "options": {
+            "force": true
+          },
+          "stage": "dev",
+          "dashboard": null,
+          "logger": {
+            "namespace": "s:core:resolver:self",
+            "prefix": null,
+            "prefixColor": null
+          },
+          "_credentialsPromise": "<REDACTED>"
+        },
+        "resolvers": {}
+      },
+      "sls": {
+        "instance": {
+          "credentials": "<REDACTED>",
+          "serviceConfigFile": {
+            "service": "reto-backend",
+            "provider": {
+              "name": "aws",
+              "runtime": "nodejs18.x",
+              "region": "us-east-2",
+              "environment": {
+                "NODE_ENV": "production",
+                "PEOPLE_TABLE": "reto-backend-dev-PeopleTable",
+                "HISTORY_TABLE": "reto-backend-dev-HistoryTable",
+                "EVENT_BUS_NAME": "reto-backend-dev-EventBus"
+              },
+              "iamRoleStatements": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "dynamodb:PutItem",
+                    "dynamodb:GetItem",
+                    "dynamodb:UpdateItem",
+                    "dynamodb:DeleteItem",
+                    "dynamodb:Scan",
+                    "events:PutEvents"
+                  ],
+                  "Resource": [
+                    "arn:aws:dynamodb:us-east-2:*:table/reto-backend-dev-PeopleTable",
+                    "arn:aws:dynamodb:us-east-2:*:table/reto-backend-dev-HistoryTable",
+                    "arn:aws:events:us-east-2:058264497369:event-bus/reto-backend-dev-EventBus"
+                  ]
+                }
+              ],
+              "stage": "dev",
+              "versionFunctions": true,
+              "compiledCloudFormationTemplate": {
+                "AWSTemplateFormatVersion": "2010-09-09",
+                "Description": "The AWS CloudFormation template for this Serverless application",
+                "Resources": {
+                  "ApiLogGroup": {
+                    "Type": "AWS::Logs::LogGroup",
+                    "Properties": {
+                      "LogGroupName": "/aws/lambda/reto-backend-dev-api"
+                    }
+                  },
+                  "EventHandlerLogGroup": {
+                    "Type": "AWS::Logs::LogGroup",
+                    "Properties": {
+                      "LogGroupName": "/aws/lambda/reto-backend-dev-eventHandler"
+                    }
+                  },
+                  "IamRoleLambdaExecution": {
+                    "Type": "AWS::IAM::Role",
+                    "Properties": {
+                      "AssumeRolePolicyDocument": {
+                        "Version": "2012-10-17",
+                        "Statement": [
+                          {
+                            "Effect": "Allow",
+                            "Principal": {
+                              "Service": [
+                                "lambda.amazonaws.com"
+                              ]
+                            },
+                            "Action": [
+                              "sts:AssumeRole"
+                            ]
+                          }
+                        ]
+                      },
+                      "Policies": [
+                        {
+                          "PolicyName": {
+                            "Fn::Join": [
+                              "-",
+                              [
+                                "reto-backend",
+                                "dev",
+                                "lambda"
+                              ]
+                            ]
+                          },
+                          "PolicyDocument": {
+                            "Version": "2012-10-17",
+                            "Statement": [
+                              {
+                                "Effect": "Allow",
+                                "Action": [
+                                  "logs:CreateLogStream",
+                                  "logs:CreateLogGroup",
+                                  "logs:TagResource"
+                                ],
+                                "Resource": [
+                                  {
+                                    "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/reto-backend-dev*:*"
+                                  }
+                                ]
+                              },
+                              {
+                                "Effect": "Allow",
+                                "Action": [
+                                  "logs:PutLogEvents"
+                                ],
+                                "Resource": [
+                                  {
+                                    "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/reto-backend-dev*:*:*"
+                                  }
+                                ]
+                              },
+                              {
+                                "Effect": "Allow",
+                                "Action": [
+                                  "dynamodb:PutItem",
+                                  "dynamodb:GetItem",
+                                  "dynamodb:UpdateItem",
+                                  "dynamodb:DeleteItem",
+                                  "dynamodb:Scan",
+                                  "events:PutEvents"
+                                ],
+                                "Resource": [
+                                  "arn:aws:dynamodb:us-east-2:*:table/reto-backend-dev-PeopleTable",
+                                  "arn:aws:dynamodb:us-east-2:*:table/reto-backend-dev-HistoryTable",
+                                  "arn:aws:events:us-east-2:058264497369:event-bus/reto-backend-dev-EventBus"
+                                ]
+                              }
+                            ]
+                          }
+                        }
+                      ],
+                      "Path": "/",
+                      "RoleName": {
+                        "Fn::Join": [
+                          "-",
+                          [
+                            "reto-backend",
+                            "dev",
+                            {
+                              "Ref": "AWS::Region"
+                            },
+                            "lambdaRole"
+                          ]
+                        ]
+                      }
+                    }
+                  },
+                  "ApiLambdaFunction": {
+                    "Type": "AWS::Lambda::Function",
+                    "Properties": {
+                      "Code": {
+                        "S3Bucket": "serverless-framework-deployments-us-east-2-5aaba69b-62a2",
+                        "S3Key": "serverless/reto-backend/dev/1731300635781-2024-11-11T04:50:35.781Z/api.zip"
+                      },
+                      "Handler": "dist/serverless.handler",
+                      "Runtime": "nodejs18.x",
+                      "FunctionName": "reto-backend-dev-api",
+                      "MemorySize": 1024,
+                      "Timeout": 6,
+                      "Environment": {
+                        "Variables": {
+                          "NODE_ENV": "production",
+                          "PEOPLE_TABLE": "reto-backend-dev-PeopleTable",
+                          "HISTORY_TABLE": "reto-backend-dev-HistoryTable",
+                          "EVENT_BUS_NAME": "reto-backend-dev-EventBus"
+                        }
+                      },
+                      "Role": {
+                        "Fn::GetAtt": [
+                          "IamRoleLambdaExecution",
+                          "Arn"
+                        ]
+                      }
+                    },
+                    "DependsOn": [
+                      "ApiLogGroup"
+                    ]
+                  },
+                  "EventHandlerLambdaFunction": {
+                    "Type": "AWS::Lambda::Function",
+                    "Properties": {
+                      "Code": {
+                        "S3Bucket": "serverless-framework-deployments-us-east-2-5aaba69b-62a2",
+                        "S3Key": "serverless/reto-backend/dev/1731300635781-2024-11-11T04:50:35.781Z/eventHandler.zip"
+                      },
+                      "Handler": "dist/serverless.eventHandler",
+                      "Runtime": "nodejs18.x",
+                      "FunctionName": "reto-backend-dev-eventHandler",
+                      "MemorySize": 1024,
+                      "Timeout": 6,
+                      "Environment": {
+                        "Variables": {
+                          "NODE_ENV": "production",
+                          "PEOPLE_TABLE": "reto-backend-dev-PeopleTable",
+                          "HISTORY_TABLE": "reto-backend-dev-HistoryTable",
+                          "EVENT_BUS_NAME": "reto-backend-dev-EventBus"
+                        }
+                      },
+                      "Role": {
+                        "Fn::GetAtt": [
+                          "IamRoleLambdaExecution",
+                          "Arn"
+                        ]
+                      }
+                    },
+                    "DependsOn": [
+                      "EventHandlerLogGroup"
+                    ]
+                  },
+                  "ApiLambdaVersion9kBle4q0LuGy2M46YRXL1UOsC29BYVEQfucfI1GEk": {
+                    "Type": "AWS::Lambda::Version",
+                    "DeletionPolicy": "Retain",
+                    "Properties": {
+                      "FunctionName": {
+                        "Ref": "ApiLambdaFunction"
+                      },
+                      "CodeSha256": "ie2o35UoMBTq3HLME98qlIjNLsisbG+VzjrqX7+TcNc="
+                    }
+                  },
+                  "EventHandlerLambdaVersionpkOP8CAWNfJ4w3NQbtUpFuvBmFIIvJdt6l3TzGJdI": {
+                    "Type": "AWS::Lambda::Version",
+                    "DeletionPolicy": "Retain",
+                    "Properties": {
+                      "FunctionName": {
+                        "Ref": "EventHandlerLambdaFunction"
+                      },
+                      "CodeSha256": "ie2o35UoMBTq3HLME98qlIjNLsisbG+VzjrqX7+TcNc="
+                    }
+                  },
+                  "ApiGatewayRestApi": {
+                    "Type": "AWS::ApiGateway::RestApi",
+                    "Properties": {
+                      "Name": "dev-reto-backend",
+                      "EndpointConfiguration": {
+                        "Types": [
+                          "EDGE"
+                        ]
+                      },
+                      "Policy": ""
+                    }
+                  },
+                  "ApiGatewayResourceApiDashsofttek": {
+                    "Type": "AWS::ApiGateway::Resource",
+                    "Properties": {
+                      "ParentId": {
+                        "Fn::GetAtt": [
+                          "ApiGatewayRestApi",
+                          "RootResourceId"
+                        ]
+                      },
+                      "PathPart": "api-softtek",
+                      "RestApiId": {
+                        "Ref": "ApiGatewayRestApi"
+                      }
+                    }
+                  },
+                  "ApiGatewayResourceApiDashsofttekProxyVar": {
+                    "Type": "AWS::ApiGateway::Resource",
+                    "Properties": {
+                      "ParentId": {
+                        "Ref": "ApiGatewayResourceApiDashsofttek"
+                      },
+                      "PathPart": "{proxy+}",
+                      "RestApiId": {
+                        "Ref": "ApiGatewayRestApi"
+                      }
+                    }
+                  },
+                  "ApiGatewayMethodApiDashsofttekProxyVarOptions": {
+                    "Type": "AWS::ApiGateway::Method",
+                    "Properties": {
+                      "AuthorizationType": "NONE",
+                      "HttpMethod": "OPTIONS",
+                      "MethodResponses": [
+                        {
+                          "StatusCode": "200",
+                          "ResponseParameters": {
+                            "method.response.header.Access-Control-Allow-Origin": true,
+                            "method.response.header.Access-Control-Allow-Headers": true,
+                            "method.response.header.Access-Control-Allow-Methods": true
+                          },
+                          "ResponseModels": {}
+                        }
+                      ],
+                      "RequestParameters": {},
+                      "Integration": {
+                        "Type": "MOCK",
+                        "RequestTemplates": {
+                          "application/json": "{statusCode:200}"
+                        },
+                        "ContentHandling": "CONVERT_TO_TEXT",
+                        "IntegrationResponses": [
+                          {
+                            "StatusCode": "200",
+                            "ResponseParameters": {
+                              "method.response.header.Access-Control-Allow-Origin": "'*'",
+                              "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent,X-Amzn-Trace-Id'",
+                              "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,DELETE,GET,HEAD,PATCH,POST,PUT'"
+                            },
+                            "ResponseTemplates": {
+                              "application/json": ""
+                            }
+                          }
+                        ]
+                      },
+                      "ResourceId": {
+                        "Ref": "ApiGatewayResourceApiDashsofttekProxyVar"
+                      },
+                      "RestApiId": {
+                        "Ref": "ApiGatewayRestApi"
+                      }
+                    }
+                  },
+                  "ApiGatewayMethodApiDashsofttekProxyVarAny": {
+                    "Type": "AWS::ApiGateway::Method",
+                    "Properties": {
+                      "HttpMethod": "ANY",
+                      "RequestParameters": {},
+                      "ResourceId": {
+                        "Ref": "ApiGatewayResourceApiDashsofttekProxyVar"
+                      },
+                      "RestApiId": {
+                        "Ref": "ApiGatewayRestApi"
+                      },
+                      "ApiKeyRequired": "<REDACTED>",
+                      "AuthorizationType": "NONE",
+                      "Integration": {
+                        "IntegrationHttpMethod": "POST",
+                        "Type": "AWS_PROXY",
+                        "Uri": {
+                          "Fn::Join": [
+                            "",
+                            [
+                              "arn:",
+                              {
+                                "Ref": "AWS::Partition"
+                              },
+                              ":apigateway:",
+                              {
+                                "Ref": "AWS::Region"
+                              },
+                              ":lambda:path/2015-03-31/functions/",
+                              {
+                                "Fn::GetAtt": [
+                                  "ApiLambdaFunction",
+                                  "Arn"
+                                ]
+                              },
+                              "/invocations"
+                            ]
+                          ]
+                        }
+                      },
+                      "MethodResponses": []
+                    },
+                    "DependsOn": [
+                      "ApiLambdaPermissionApiGateway"
+                    ]
+                  },
+                  "ApiGatewayDeployment1731300619058": {
+                    "Type": "AWS::ApiGateway::Deployment",
+                    "Properties": {
+                      "RestApiId": {
+                        "Ref": "ApiGatewayRestApi"
+                      },
+                      "StageName": "dev"
+                    },
+                    "DependsOn": [
+                      "ApiGatewayMethodApiDashsofttekProxyVarOptions",
+                      "ApiGatewayMethodApiDashsofttekProxyVarAny"
+                    ]
+                  },
+                  "ApiLambdaPermissionApiGateway": {
+                    "Type": "AWS::Lambda::Permission",
+                    "Properties": {
+                      "FunctionName": {
+                        "Fn::GetAtt": [
+                          "ApiLambdaFunction",
+                          "Arn"
+                        ]
+                      },
+                      "Action": "lambda:InvokeFunction",
+                      "Principal": "apigateway.amazonaws.com",
+                      "SourceArn": {
+                        "Fn::Join": [
+                          "",
+                          [
+                            "arn:",
+                            {
+                              "Ref": "AWS::Partition"
+                            },
+                            ":execute-api:",
+                            {
+                              "Ref": "AWS::Region"
+                            },
+                            ":",
+                            {
+                              "Ref": "AWS::AccountId"
+                            },
+                            ":",
+                            {
+                              "Ref": "ApiGatewayRestApi"
+                            },
+                            "/*/*"
+                          ]
+                        ]
+                      }
+                    }
+                  },
+                  "RetobackenddeveventHandlerrule1EventBridgeRule": {
+                    "Type": "AWS::Events::Rule",
+                    "Properties": {
+                      "EventPattern": {
+                        "source": [
+                          "reto-backend"
+                        ],
+                        "detail-type": [
+                          "request.history"
+                        ]
+                      },
+                      "Name": "reto-backend-dev-eventHandler-rule-1",
+                      "State": "ENABLED",
+                      "Targets": [
+                        {
+                          "Arn": {
+                            "Fn::GetAtt": [
+                              "EventHandlerLambdaFunction",
+                              "Arn"
+                            ]
+                          },
+                          "Id": "reto-backend-dev-eventHandler-rule-1-target"
+                        }
+                      ]
+                    }
+                  },
+                  "EventHandlerEventBridgeLambdaPermission1": {
+                    "Type": "AWS::Lambda::Permission",
+                    "Properties": {
+                      "Action": "lambda:InvokeFunction",
+                      "FunctionName": {
+                        "Fn::GetAtt": [
+                          "EventHandlerLambdaFunction",
+                          "Arn"
+                        ]
+                      },
+                      "Principal": "events.amazonaws.com",
+                      "SourceArn": {
+                        "Fn::Join": [
+                          ":",
+                          [
+                            "arn",
+                            {
+                              "Ref": "AWS::Partition"
+                            },
+                            "events",
+                            {
+                              "Ref": "AWS::Region"
+                            },
+                            {
+                              "Ref": "AWS::AccountId"
+                            },
+                            {
+                              "Fn::Join": [
+                                "/",
+                                [
+                                  "rule",
+                                  "reto-backend-dev-eventHandler-rule-1"
+                                ]
+                              ]
+                            }
+                          ]
+                        ]
+                      }
+                    }
+                  },
+                  "PeopleTable": {
+                    "Type": "AWS::DynamoDB::Table",
+                    "Properties": {
+                      "TableName": "reto-backend-dev-PeopleTable",
+                      "AttributeDefinitions": [
+                        {
+                          "AttributeName": "id",
+                          "AttributeType": "S"
+                        },
+                        {
+                          "AttributeName": "status",
+                          "AttributeType": "S"
+                        }
+                      ],
+                      "KeySchema": [
+                        {
+                          "AttributeName": "id",
+                          "KeyType": "HASH"
+                        }
+                      ],
+                      "BillingMode": "PAY_PER_REQUEST",
+                      "TimeToLiveSpecification": {
+                        "AttributeName": "ttl",
+                        "Enabled": true
+                      },
+                      "GlobalSecondaryIndexes": [
+                        {
+                          "IndexName": "status-index",
+                          "KeySchema": [
+                            {
+                              "AttributeName": "status",
+                              "KeyType": "HASH"
+                            }
+                          ],
+                          "Projection": {
+                            "ProjectionType": "ALL"
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "HistoryTable": {
+                    "Type": "AWS::DynamoDB::Table",
+                    "Properties": {
+                      "TableName": "reto-backend-dev-HistoryTable",
+                      "AttributeDefinitions": [
+                        {
+                          "AttributeName": "requestId",
+                          "AttributeType": "S"
+                        }
+                      ],
+                      "KeySchema": [
+                        {
+                          "AttributeName": "requestId",
+                          "KeyType": "HASH"
+                        }
+                      ],
+                      "BillingMode": "PAY_PER_REQUEST"
+                    }
+                  },
+                  "EventBus": {
+                    "Type": "AWS::Events::EventBus",
+                    "Properties": {
+                      "Name": "reto-backend-dev-EventBus"
+                    }
+                  }
+                },
+                "Outputs": {
+                  "ServerlessDeploymentBucketName": {
+                    "Value": "serverless-framework-deployments-us-east-2-5aaba69b-62a2",
+                    "Export": {
+                      "Name": "sls-reto-backend-dev-ServerlessDeploymentBucketName"
+                    }
+                  },
+                  "ApiLambdaFunctionQualifiedArn": {
+                    "Description": "Current Lambda function version",
+                    "Value": {
+                      "Ref": "ApiLambdaVersion9kBle4q0LuGy2M46YRXL1UOsC29BYVEQfucfI1GEk"
+                    },
+                    "Export": {
+                      "Name": "sls-reto-backend-dev-ApiLambdaFunctionQualifiedArn"
+                    }
+                  },
+                  "EventHandlerLambdaFunctionQualifiedArn": {
+                    "Description": "Current Lambda function version",
+                    "Value": {
+                      "Ref": "EventHandlerLambdaVersionpkOP8CAWNfJ4w3NQbtUpFuvBmFIIvJdt6l3TzGJdI"
+                    },
+                    "Export": {
+                      "Name": "sls-reto-backend-dev-EventHandlerLambdaFunctionQualifiedArn"
+                    }
+                  },
+                  "ServiceEndpoint": {
+                    "Description": "URL of the service endpoint",
+                    "Value": {
+                      "Fn::Join": [
+                        "",
+                        [
+                          "https://",
+                          {
+                            "Ref": "ApiGatewayRestApi"
+                          },
+                          ".execute-api.",
+                          {
+                            "Ref": "AWS::Region"
+                          },
+                          ".",
+                          {
+                            "Ref": "AWS::URLSuffix"
+                          },
+                          "/dev"
+                        ]
+                      ]
+                    },
+                    "Export": {
+                      "Name": "sls-reto-backend-dev-ServiceEndpoint"
+                    }
+                  }
+                }
+              },
+              "vpc": {}
+            },
+            "plugins": [
+              "serverless-offline"
+            ],
+            "custom": {
+              "esbuild": {
+                "bundle": true,
+                "minify": true,
+                "sourcemap": false,
+                "target": "node18"
+              }
+            },
+            "package": {
+              "individually": true,
+              "exclude": [
+                "node_modules/.bin/**",
+                "node_modules/**/*.md",
+                "node_modules/**/*.test.js",
+                "node_modules/**/*.debug.js",
+                "node_modules/**/*.spec.js",
+                "node_modules/**/*.ts",
+                "node_modules/**/*.tsbuildinfo",
+                "node_modules/**/test/**",
+                "node_modules/**/spec/**",
+                "node_modules/**/docs/**",
+                "node_modules/**/coverage/**",
+                "node_modules/**/.cache/**",
+                "node_modules/**/.eslintrc.js",
+                "node_modules/**/.prettierrc",
+                "node_modules/**/tsconfig.json",
+                "node_modules/**/tsconfig.build.json",
+                "node_modules/**/jestconfig.json"
+              ],
+              "artifactsS3KeyDirname": "serverless/reto-backend/dev/code-artifacts",
+              "deploymentBucket": "serverless-framework-deployments-us-east-2-5aaba69b-62a2",
+              "artifactDirectoryName": "serverless/reto-backend/dev/1731300635781-2024-11-11T04:50:35.781Z"
+            },
+            "functions": {
+              "api": {
+                "handler": "dist/serverless.handler",
+                "events": [
+                  {
+                    "http": {
+                      "method": "any",
+                      "path": "api-softtek/{proxy+}",
+                      "cors": {
+                        "origin": "*",
+                        "methods": [
+                          "OPTIONS",
+                          "ANY"
+                        ],
+                        "headers": [
+                          "Content-Type",
+                          "X-Amz-Date",
+                          "Authorization",
+                          "X-Api-Key",
+                          "X-Amz-Security-Token",
+                          "X-Amz-User-Agent",
+                          "X-Amzn-Trace-Id"
+                        ],
+                        "allowCredentials": "<REDACTED>"
+                      },
+                      "integration": "AWS_PROXY"
+                    }
+                  }
+                ],
+                "name": "reto-backend-dev-api",
+                "package": {
+                  "artifact": "C:\\Users\\l4fv\\Documents\\Pruebas Tecnicas\\reto-backend\\.serverless\\api.zip"
+                },
+                "memory": 1024,
+                "timeout": 6,
+                "runtime": "nodejs18.x",
+                "vpc": {},
+                "versionLogicalId": "ApiLambdaVersion9kBle4q0LuGy2M46YRXL1UOsC29BYVEQfucfI1GEk"
+              },
+              "eventHandler": {
+                "handler": "dist/serverless.eventHandler",
+                "events": [
+                  {
+                    "eventBridge": {
+                      "pattern": {
+                        "source": [
+                          "reto-backend"
+                        ],
+                        "detail-type": [
+                          "request.history"
+                        ]
+                      }
+                    }
+                  }
+                ],
+                "name": "reto-backend-dev-eventHandler",
+                "package": {
+                  "artifact": "C:\\Users\\l4fv\\Documents\\Pruebas Tecnicas\\reto-backend\\.serverless\\eventHandler.zip"
+                },
+                "memory": 1024,
+                "timeout": 6,
+                "runtime": "nodejs18.x",
+                "vpc": {},
+                "versionLogicalId": "EventHandlerLambdaVersionpkOP8CAWNfJ4w3NQbtUpFuvBmFIIvJdt6l3TzGJdI"
+              }
+            },
+            "resources": {
+              "Resources": {
+                "PeopleTable": {
+                  "Type": "AWS::DynamoDB::Table",
+                  "Properties": {
+                    "TableName": "reto-backend-dev-PeopleTable",
+                    "AttributeDefinitions": [
+                      {
+                        "AttributeName": "id",
+                        "AttributeType": "S"
+                      },
+                      {
+                        "AttributeName": "status",
+                        "AttributeType": "S"
+                      }
+                    ],
+                    "KeySchema": [
+                      {
+                        "AttributeName": "id",
+                        "KeyType": "HASH"
+                      }
+                    ],
+                    "BillingMode": "PAY_PER_REQUEST",
+                    "TimeToLiveSpecification": {
+                      "AttributeName": "ttl",
+                      "Enabled": true
+                    },
+                    "GlobalSecondaryIndexes": [
+                      {
+                        "IndexName": "status-index",
+                        "KeySchema": [
+                          {
+                            "AttributeName": "status",
+                            "KeyType": "HASH"
+                          }
+                        ],
+                        "Projection": {
+                          "ProjectionType": "ALL"
+                        }
+                      }
+                    ]
+                  }
+                },
+                "HistoryTable": {
+                  "Type": "AWS::DynamoDB::Table",
+                  "Properties": {
+                    "TableName": "reto-backend-dev-HistoryTable",
+                    "AttributeDefinitions": [
+                      {
+                        "AttributeName": "requestId",
+                        "AttributeType": "S"
+                      }
+                    ],
+                    "KeySchema": [
+                      {
+                        "AttributeName": "requestId",
+                        "KeyType": "HASH"
+                      }
+                    ],
+                    "BillingMode": "PAY_PER_REQUEST"
+                  }
+                },
+                "EventBus": {
+                  "Type": "AWS::Events::EventBus",
+                  "Properties": {
+                    "Name": "reto-backend-dev-EventBus"
+                  }
+                }
+              },
+              "Outputs": {}
+            }
+          },
+          "configFileDirPath": "C:\\Users\\l4fv\\Documents\\Pruebas Tecnicas\\reto-backend",
+          "config": {
+            "type": "sls"
+          },
+          "options": {
+            "force": true
+          },
+          "stage": "dev",
+          "dashboard": null,
+          "logger": {
+            "namespace": "s:core:resolver:sls",
+            "prefix": null,
+            "prefixColor": null
+          },
+          "_credentialsPromise": "<REDACTED>"
+        },
+        "resolvers": {}
+      }
+    },
+    "composeServiceName": null,
+    "servicePath": "C:\\Users\\l4fv\\Documents\\Pruebas Tecnicas\\reto-backend",
+    "serviceConfigFileName": "serverless.yml",
+    "service": {
+      "service": "reto-backend",
+      "provider": {
+        "name": "aws",
+        "runtime": "nodejs18.x",
+        "region": "us-east-2",
+        "environment": {
+          "NODE_ENV": "production",
+          "PEOPLE_TABLE": "reto-backend-dev-PeopleTable",
+          "HISTORY_TABLE": "reto-backend-dev-HistoryTable",
+          "EVENT_BUS_NAME": "reto-backend-dev-EventBus"
+        },
+        "iamRoleStatements": [
+          {
+            "Effect": "Allow",
+            "Action": [
+              "dynamodb:PutItem",
+              "dynamodb:GetItem",
+              "dynamodb:UpdateItem",
+              "dynamodb:DeleteItem",
+              "dynamodb:Scan",
+              "events:PutEvents"
+            ],
+            "Resource": [
+              "arn:aws:dynamodb:us-east-2:*:table/reto-backend-dev-PeopleTable",
+              "arn:aws:dynamodb:us-east-2:*:table/reto-backend-dev-HistoryTable",
+              "arn:aws:events:us-east-2:058264497369:event-bus/reto-backend-dev-EventBus"
+            ]
+          }
+        ],
+        "stage": "dev",
+        "versionFunctions": true,
+        "compiledCloudFormationTemplate": {
+          "AWSTemplateFormatVersion": "2010-09-09",
+          "Description": "The AWS CloudFormation template for this Serverless application",
+          "Resources": {
+            "ApiLogGroup": {
+              "Type": "AWS::Logs::LogGroup",
+              "Properties": {
+                "LogGroupName": "/aws/lambda/reto-backend-dev-api"
+              }
+            },
+            "EventHandlerLogGroup": {
+              "Type": "AWS::Logs::LogGroup",
+              "Properties": {
+                "LogGroupName": "/aws/lambda/reto-backend-dev-eventHandler"
+              }
+            },
+            "IamRoleLambdaExecution": {
+              "Type": "AWS::IAM::Role",
+              "Properties": {
+                "AssumeRolePolicyDocument": {
+                  "Version": "2012-10-17",
+                  "Statement": [
+                    {
+                      "Effect": "Allow",
+                      "Principal": {
+                        "Service": [
+                          "lambda.amazonaws.com"
+                        ]
+                      },
+                      "Action": [
+                        "sts:AssumeRole"
+                      ]
+                    }
+                  ]
+                },
+                "Policies": [
+                  {
+                    "PolicyName": {
+                      "Fn::Join": [
+                        "-",
+                        [
+                          "reto-backend",
+                          "dev",
+                          "lambda"
+                        ]
+                      ]
+                    },
+                    "PolicyDocument": {
+                      "Version": "2012-10-17",
+                      "Statement": [
+                        {
+                          "Effect": "Allow",
+                          "Action": [
+                            "logs:CreateLogStream",
+                            "logs:CreateLogGroup",
+                            "logs:TagResource"
+                          ],
+                          "Resource": [
+                            {
+                              "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/reto-backend-dev*:*"
+                            }
+                          ]
+                        },
+                        {
+                          "Effect": "Allow",
+                          "Action": [
+                            "logs:PutLogEvents"
+                          ],
+                          "Resource": [
+                            {
+                              "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/reto-backend-dev*:*:*"
+                            }
+                          ]
+                        },
+                        {
+                          "Effect": "Allow",
+                          "Action": [
+                            "dynamodb:PutItem",
+                            "dynamodb:GetItem",
+                            "dynamodb:UpdateItem",
+                            "dynamodb:DeleteItem",
+                            "dynamodb:Scan",
+                            "events:PutEvents"
+                          ],
+                          "Resource": [
+                            "arn:aws:dynamodb:us-east-2:*:table/reto-backend-dev-PeopleTable",
+                            "arn:aws:dynamodb:us-east-2:*:table/reto-backend-dev-HistoryTable",
+                            "arn:aws:events:us-east-2:058264497369:event-bus/reto-backend-dev-EventBus"
+                          ]
+                        }
+                      ]
+                    }
+                  }
+                ],
+                "Path": "/",
+                "RoleName": {
+                  "Fn::Join": [
+                    "-",
+                    [
+                      "reto-backend",
+                      "dev",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      "lambdaRole"
+                    ]
+                  ]
+                }
+              }
+            },
+            "ApiLambdaFunction": {
+              "Type": "AWS::Lambda::Function",
+              "Properties": {
+                "Code": {
+                  "S3Bucket": "serverless-framework-deployments-us-east-2-5aaba69b-62a2",
+                  "S3Key": "serverless/reto-backend/dev/1731300635781-2024-11-11T04:50:35.781Z/api.zip"
+                },
+                "Handler": "dist/serverless.handler",
+                "Runtime": "nodejs18.x",
+                "FunctionName": "reto-backend-dev-api",
+                "MemorySize": 1024,
+                "Timeout": 6,
+                "Environment": {
+                  "Variables": {
+                    "NODE_ENV": "production",
+                    "PEOPLE_TABLE": "reto-backend-dev-PeopleTable",
+                    "HISTORY_TABLE": "reto-backend-dev-HistoryTable",
+                    "EVENT_BUS_NAME": "reto-backend-dev-EventBus"
+                  }
+                },
+                "Role": {
+                  "Fn::GetAtt": [
+                    "IamRoleLambdaExecution",
+                    "Arn"
+                  ]
+                }
+              },
+              "DependsOn": [
+                "ApiLogGroup"
+              ]
+            },
+            "EventHandlerLambdaFunction": {
+              "Type": "AWS::Lambda::Function",
+              "Properties": {
+                "Code": {
+                  "S3Bucket": "serverless-framework-deployments-us-east-2-5aaba69b-62a2",
+                  "S3Key": "serverless/reto-backend/dev/1731300635781-2024-11-11T04:50:35.781Z/eventHandler.zip"
+                },
+                "Handler": "dist/serverless.eventHandler",
+                "Runtime": "nodejs18.x",
+                "FunctionName": "reto-backend-dev-eventHandler",
+                "MemorySize": 1024,
+                "Timeout": 6,
+                "Environment": {
+                  "Variables": {
+                    "NODE_ENV": "production",
+                    "PEOPLE_TABLE": "reto-backend-dev-PeopleTable",
+                    "HISTORY_TABLE": "reto-backend-dev-HistoryTable",
+                    "EVENT_BUS_NAME": "reto-backend-dev-EventBus"
+                  }
+                },
+                "Role": {
+                  "Fn::GetAtt": [
+                    "IamRoleLambdaExecution",
+                    "Arn"
+                  ]
+                }
+              },
+              "DependsOn": [
+                "EventHandlerLogGroup"
+              ]
+            },
+            "ApiLambdaVersion9kBle4q0LuGy2M46YRXL1UOsC29BYVEQfucfI1GEk": {
+              "Type": "AWS::Lambda::Version",
+              "DeletionPolicy": "Retain",
+              "Properties": {
+                "FunctionName": {
+                  "Ref": "ApiLambdaFunction"
+                },
+                "CodeSha256": "ie2o35UoMBTq3HLME98qlIjNLsisbG+VzjrqX7+TcNc="
+              }
+            },
+            "EventHandlerLambdaVersionpkOP8CAWNfJ4w3NQbtUpFuvBmFIIvJdt6l3TzGJdI": {
+              "Type": "AWS::Lambda::Version",
+              "DeletionPolicy": "Retain",
+              "Properties": {
+                "FunctionName": {
+                  "Ref": "EventHandlerLambdaFunction"
+                },
+                "CodeSha256": "ie2o35UoMBTq3HLME98qlIjNLsisbG+VzjrqX7+TcNc="
+              }
+            },
+            "ApiGatewayRestApi": {
+              "Type": "AWS::ApiGateway::RestApi",
+              "Properties": {
+                "Name": "dev-reto-backend",
+                "EndpointConfiguration": {
+                  "Types": [
+                    "EDGE"
+                  ]
+                },
+                "Policy": ""
+              }
+            },
+            "ApiGatewayResourceApiDashsofttek": {
+              "Type": "AWS::ApiGateway::Resource",
+              "Properties": {
+                "ParentId": {
+                  "Fn::GetAtt": [
+                    "ApiGatewayRestApi",
+                    "RootResourceId"
+                  ]
+                },
+                "PathPart": "api-softtek",
+                "RestApiId": {
+                  "Ref": "ApiGatewayRestApi"
+                }
+              }
+            },
+            "ApiGatewayResourceApiDashsofttekProxyVar": {
+              "Type": "AWS::ApiGateway::Resource",
+              "Properties": {
+                "ParentId": {
+                  "Ref": "ApiGatewayResourceApiDashsofttek"
+                },
+                "PathPart": "{proxy+}",
+                "RestApiId": {
+                  "Ref": "ApiGatewayRestApi"
+                }
+              }
+            },
+            "ApiGatewayMethodApiDashsofttekProxyVarOptions": {
+              "Type": "AWS::ApiGateway::Method",
+              "Properties": {
+                "AuthorizationType": "NONE",
+                "HttpMethod": "OPTIONS",
+                "MethodResponses": [
+                  {
+                    "StatusCode": "200",
+                    "ResponseParameters": {
+                      "method.response.header.Access-Control-Allow-Origin": true,
+                      "method.response.header.Access-Control-Allow-Headers": true,
+                      "method.response.header.Access-Control-Allow-Methods": true
+                    },
+                    "ResponseModels": {}
+                  }
+                ],
+                "RequestParameters": {},
+                "Integration": {
+                  "Type": "MOCK",
+                  "RequestTemplates": {
+                    "application/json": "{statusCode:200}"
+                  },
+                  "ContentHandling": "CONVERT_TO_TEXT",
+                  "IntegrationResponses": [
+                    {
+                      "StatusCode": "200",
+                      "ResponseParameters": {
+                        "method.response.header.Access-Control-Allow-Origin": "'*'",
+                        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent,X-Amzn-Trace-Id'",
+                        "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,DELETE,GET,HEAD,PATCH,POST,PUT'"
+                      },
+                      "ResponseTemplates": {
+                        "application/json": ""
+                      }
+                    }
+                  ]
+                },
+                "ResourceId": {
+                  "Ref": "ApiGatewayResourceApiDashsofttekProxyVar"
+                },
+                "RestApiId": {
+                  "Ref": "ApiGatewayRestApi"
+                }
+              }
+            },
+            "ApiGatewayMethodApiDashsofttekProxyVarAny": {
+              "Type": "AWS::ApiGateway::Method",
+              "Properties": {
+                "HttpMethod": "ANY",
+                "RequestParameters": {},
+                "ResourceId": {
+                  "Ref": "ApiGatewayResourceApiDashsofttekProxyVar"
+                },
+                "RestApiId": {
+                  "Ref": "ApiGatewayRestApi"
+                },
+                "ApiKeyRequired": "<REDACTED>",
+                "AuthorizationType": "NONE",
+                "Integration": {
+                  "IntegrationHttpMethod": "POST",
+                  "Type": "AWS_PROXY",
+                  "Uri": {
+                    "Fn::Join": [
+                      "",
+                      [
+                        "arn:",
+                        {
+                          "Ref": "AWS::Partition"
+                        },
+                        ":apigateway:",
+                        {
+                          "Ref": "AWS::Region"
+                        },
+                        ":lambda:path/2015-03-31/functions/",
+                        {
+                          "Fn::GetAtt": [
+                            "ApiLambdaFunction",
+                            "Arn"
+                          ]
+                        },
+                        "/invocations"
+                      ]
+                    ]
+                  }
+                },
+                "MethodResponses": []
+              },
+              "DependsOn": [
+                "ApiLambdaPermissionApiGateway"
+              ]
+            },
+            "ApiGatewayDeployment1731300619058": {
+              "Type": "AWS::ApiGateway::Deployment",
+              "Properties": {
+                "RestApiId": {
+                  "Ref": "ApiGatewayRestApi"
+                },
+                "StageName": "dev"
+              },
+              "DependsOn": [
+                "ApiGatewayMethodApiDashsofttekProxyVarOptions",
+                "ApiGatewayMethodApiDashsofttekProxyVarAny"
+              ]
+            },
+            "ApiLambdaPermissionApiGateway": {
+              "Type": "AWS::Lambda::Permission",
+              "Properties": {
+                "FunctionName": {
+                  "Fn::GetAtt": [
+                    "ApiLambdaFunction",
+                    "Arn"
+                  ]
+                },
+                "Action": "lambda:InvokeFunction",
+                "Principal": "apigateway.amazonaws.com",
+                "SourceArn": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":execute-api:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":",
+                      {
+                        "Ref": "AWS::AccountId"
+                      },
+                      ":",
+                      {
+                        "Ref": "ApiGatewayRestApi"
+                      },
+                      "/*/*"
+                    ]
+                  ]
+                }
+              }
+            },
+            "RetobackenddeveventHandlerrule1EventBridgeRule": {
+              "Type": "AWS::Events::Rule",
+              "Properties": {
+                "EventPattern": {
+                  "source": [
+                    "reto-backend"
+                  ],
+                  "detail-type": [
+                    "request.history"
+                  ]
+                },
+                "Name": "reto-backend-dev-eventHandler-rule-1",
+                "State": "ENABLED",
+                "Targets": [
+                  {
+                    "Arn": {
+                      "Fn::GetAtt": [
+                        "EventHandlerLambdaFunction",
+                        "Arn"
+                      ]
+                    },
+                    "Id": "reto-backend-dev-eventHandler-rule-1-target"
+                  }
+                ]
+              }
+            },
+            "EventHandlerEventBridgeLambdaPermission1": {
+              "Type": "AWS::Lambda::Permission",
+              "Properties": {
+                "Action": "lambda:InvokeFunction",
+                "FunctionName": {
+                  "Fn::GetAtt": [
+                    "EventHandlerLambdaFunction",
+                    "Arn"
+                  ]
+                },
+                "Principal": "events.amazonaws.com",
+                "SourceArn": {
+                  "Fn::Join": [
+                    ":",
+                    [
+                      "arn",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      "events",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      {
+                        "Ref": "AWS::AccountId"
+                      },
+                      {
+                        "Fn::Join": [
+                          "/",
+                          [
+                            "rule",
+                            "reto-backend-dev-eventHandler-rule-1"
+                          ]
+                        ]
+                      }
+                    ]
+                  ]
+                }
+              }
+            },
+            "PeopleTable": {
+              "Type": "AWS::DynamoDB::Table",
+              "Properties": {
+                "TableName": "reto-backend-dev-PeopleTable",
+                "AttributeDefinitions": [
+                  {
+                    "AttributeName": "id",
+                    "AttributeType": "S"
+                  },
+                  {
+                    "AttributeName": "status",
+                    "AttributeType": "S"
+                  }
+                ],
+                "KeySchema": [
+                  {
+                    "AttributeName": "id",
+                    "KeyType": "HASH"
+                  }
+                ],
+                "BillingMode": "PAY_PER_REQUEST",
+                "TimeToLiveSpecification": {
+                  "AttributeName": "ttl",
+                  "Enabled": true
+                },
+                "GlobalSecondaryIndexes": [
+                  {
+                    "IndexName": "status-index",
+                    "KeySchema": [
+                      {
+                        "AttributeName": "status",
+                        "KeyType": "HASH"
+                      }
+                    ],
+                    "Projection": {
+                      "ProjectionType": "ALL"
+                    }
+                  }
+                ]
+              }
+            },
+            "HistoryTable": {
+              "Type": "AWS::DynamoDB::Table",
+              "Properties": {
+                "TableName": "reto-backend-dev-HistoryTable",
+                "AttributeDefinitions": [
+                  {
+                    "AttributeName": "requestId",
+                    "AttributeType": "S"
+                  }
+                ],
+                "KeySchema": [
+                  {
+                    "AttributeName": "requestId",
+                    "KeyType": "HASH"
+                  }
+                ],
+                "BillingMode": "PAY_PER_REQUEST"
+              }
+            },
+            "EventBus": {
+              "Type": "AWS::Events::EventBus",
+              "Properties": {
+                "Name": "reto-backend-dev-EventBus"
+              }
+            }
+          },
+          "Outputs": {
+            "ServerlessDeploymentBucketName": {
+              "Value": "serverless-framework-deployments-us-east-2-5aaba69b-62a2",
+              "Export": {
+                "Name": "sls-reto-backend-dev-ServerlessDeploymentBucketName"
+              }
+            },
+            "ApiLambdaFunctionQualifiedArn": {
+              "Description": "Current Lambda function version",
+              "Value": {
+                "Ref": "ApiLambdaVersion9kBle4q0LuGy2M46YRXL1UOsC29BYVEQfucfI1GEk"
+              },
+              "Export": {
+                "Name": "sls-reto-backend-dev-ApiLambdaFunctionQualifiedArn"
+              }
+            },
+            "EventHandlerLambdaFunctionQualifiedArn": {
+              "Description": "Current Lambda function version",
+              "Value": {
+                "Ref": "EventHandlerLambdaVersionpkOP8CAWNfJ4w3NQbtUpFuvBmFIIvJdt6l3TzGJdI"
+              },
+              "Export": {
+                "Name": "sls-reto-backend-dev-EventHandlerLambdaFunctionQualifiedArn"
+              }
+            },
+            "ServiceEndpoint": {
+              "Description": "URL of the service endpoint",
+              "Value": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "https://",
+                    {
+                      "Ref": "ApiGatewayRestApi"
+                    },
+                    ".execute-api.",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ".",
+                    {
+                      "Ref": "AWS::URLSuffix"
+                    },
+                    "/dev"
+                  ]
+                ]
+              },
+              "Export": {
+                "Name": "sls-reto-backend-dev-ServiceEndpoint"
+              }
+            }
+          }
+        },
+        "vpc": {}
+      },
+      "plugins": [
+        "serverless-offline"
+      ],
+      "custom": {
+        "esbuild": {
+          "bundle": true,
+          "minify": true,
+          "sourcemap": false,
+          "target": "node18"
+        }
+      },
+      "package": {
+        "individually": true,
+        "exclude": [
+          "node_modules/.bin/**",
+          "node_modules/**/*.md",
+          "node_modules/**/*.test.js",
+          "node_modules/**/*.debug.js",
+          "node_modules/**/*.spec.js",
+          "node_modules/**/*.ts",
+          "node_modules/**/*.tsbuildinfo",
+          "node_modules/**/test/**",
+          "node_modules/**/spec/**",
+          "node_modules/**/docs/**",
+          "node_modules/**/coverage/**",
+          "node_modules/**/.cache/**",
+          "node_modules/**/.eslintrc.js",
+          "node_modules/**/.prettierrc",
+          "node_modules/**/tsconfig.json",
+          "node_modules/**/tsconfig.build.json",
+          "node_modules/**/jestconfig.json"
+        ],
+        "artifactsS3KeyDirname": "serverless/reto-backend/dev/code-artifacts",
+        "deploymentBucket": "serverless-framework-deployments-us-east-2-5aaba69b-62a2",
+        "artifactDirectoryName": "serverless/reto-backend/dev/1731300635781-2024-11-11T04:50:35.781Z"
+      },
+      "functions": {
+        "api": {
+          "handler": "dist/serverless.handler",
+          "events": [
+            {
+              "http": {
+                "method": "any",
+                "path": "api-softtek/{proxy+}",
+                "cors": {
+                  "origin": "*",
+                  "methods": [
+                    "OPTIONS",
+                    "ANY"
+                  ],
+                  "headers": [
+                    "Content-Type",
+                    "X-Amz-Date",
+                    "Authorization",
+                    "X-Api-Key",
+                    "X-Amz-Security-Token",
+                    "X-Amz-User-Agent",
+                    "X-Amzn-Trace-Id"
+                  ],
+                  "allowCredentials": "<REDACTED>"
+                },
+                "integration": "AWS_PROXY"
+              }
+            }
+          ],
+          "name": "reto-backend-dev-api",
+          "package": {
+            "artifact": "C:\\Users\\l4fv\\Documents\\Pruebas Tecnicas\\reto-backend\\.serverless\\api.zip"
+          },
+          "memory": 1024,
+          "timeout": 6,
+          "runtime": "nodejs18.x",
+          "vpc": {},
+          "versionLogicalId": "ApiLambdaVersion9kBle4q0LuGy2M46YRXL1UOsC29BYVEQfucfI1GEk"
+        },
+        "eventHandler": {
+          "handler": "dist/serverless.eventHandler",
+          "events": [
+            {
+              "eventBridge": {
+                "pattern": {
+                  "source": [
+                    "reto-backend"
+                  ],
+                  "detail-type": [
+                    "request.history"
+                  ]
+                }
+              }
+            }
+          ],
+          "name": "reto-backend-dev-eventHandler",
+          "package": {
+            "artifact": "C:\\Users\\l4fv\\Documents\\Pruebas Tecnicas\\reto-backend\\.serverless\\eventHandler.zip"
+          },
+          "memory": 1024,
+          "timeout": 6,
+          "runtime": "nodejs18.x",
+          "vpc": {},
+          "versionLogicalId": "EventHandlerLambdaVersionpkOP8CAWNfJ4w3NQbtUpFuvBmFIIvJdt6l3TzGJdI"
+        }
+      },
+      "resources": {
+        "Resources": {
+          "PeopleTable": {
+            "Type": "AWS::DynamoDB::Table",
+            "Properties": {
+              "TableName": "reto-backend-dev-PeopleTable",
+              "AttributeDefinitions": [
+                {
+                  "AttributeName": "id",
+                  "AttributeType": "S"
+                },
+                {
+                  "AttributeName": "status",
+                  "AttributeType": "S"
+                }
+              ],
+              "KeySchema": [
+                {
+                  "AttributeName": "id",
+                  "KeyType": "HASH"
+                }
+              ],
+              "BillingMode": "PAY_PER_REQUEST",
+              "TimeToLiveSpecification": {
+                "AttributeName": "ttl",
+                "Enabled": true
+              },
+              "GlobalSecondaryIndexes": [
+                {
+                  "IndexName": "status-index",
+                  "KeySchema": [
+                    {
+                      "AttributeName": "status",
+                      "KeyType": "HASH"
+                    }
+                  ],
+                  "Projection": {
+                    "ProjectionType": "ALL"
+                  }
+                }
+              ]
+            }
+          },
+          "HistoryTable": {
+            "Type": "AWS::DynamoDB::Table",
+            "Properties": {
+              "TableName": "reto-backend-dev-HistoryTable",
+              "AttributeDefinitions": [
+                {
+                  "AttributeName": "requestId",
+                  "AttributeType": "S"
+                }
+              ],
+              "KeySchema": [
+                {
+                  "AttributeName": "requestId",
+                  "KeyType": "HASH"
+                }
+              ],
+              "BillingMode": "PAY_PER_REQUEST"
+            }
+          },
+          "EventBus": {
+            "Type": "AWS::Events::EventBus",
+            "Properties": {
+              "Name": "reto-backend-dev-EventBus"
+            }
+          }
+        },
+        "Outputs": {}
+      }
+    },
+    "serviceRawFile": "service: reto-backend\n\nprovider:\n  name: aws\n  runtime: nodejs18.x\n  region: us-east-2\n  environment:\n    NODE_ENV: production\n    PEOPLE_TABLE: ${self:service}-${sls:stage}-PeopleTable\n    HISTORY_TABLE: ${self:service}-${sls:stage}-HistoryTable\n    EVENT_BUS_NAME: ${self:service}-${sls:stage}-EventBus\n\n  iamRoleStatements:\n    - Effect: \"Allow\"\n      Action:\n        - \"dynamodb:PutItem\"\n        - \"dynamodb:GetItem\"\n        - \"dynamodb:UpdateItem\"\n        - \"dynamodb:DeleteItem\"\n        - \"dynamodb:Scan\"\n        - \"events:PutEvents\"\n      Resource: \n        - \"arn:aws:dynamodb:${self:provider.region}:*:table/${self:service}-${sls:stage}-PeopleTable\"\n        - \"arn:aws:dynamodb:${self:provider.region}:*:table/${self:service}-${sls:stage}-HistoryTable\"\n        - \"arn:aws:events:${self:provider.region}:058264497369:event-bus/reto-backend-dev-EventBus\"\n        \nplugins:\n  - serverless-offline\n\ncustom:\n  esbuild:\n    bundle: true\n    minify: true\n    sourcemap: false\n    target: node18  \n\npackage:\n  individually: true\n  exclude:\n    - node_modules/.bin/**\n    - node_modules/**/*.md\n    - node_modules/**/*.test.js\n    - node_modules/**/*.debug.js\n    - node_modules/**/*.spec.js\n    - node_modules/**/*.ts\n    - node_modules/**/*.tsbuildinfo\n    - node_modules/**/test/**\n    - node_modules/**/spec/**\n    - node_modules/**/docs/**\n    - node_modules/**/coverage/**\n    - node_modules/**/.cache/**\n    - node_modules/**/.eslintrc.js\n    - node_modules/**/.prettierrc\n    - node_modules/**/tsconfig.json\n    - node_modules/**/tsconfig.build.json\n    - node_modules/**/jestconfig.json\n\nfunctions:\n  api:\n    handler: dist/serverless.handler\n    events:\n       - http:\n          method: ANY\n          path: api-softtek/{proxy+}\n          cors: true\n  eventHandler:\n    handler: dist/serverless.eventHandler\n    events:\n      - eventBridge:\n          pattern:\n            source:\n              - reto-backend\n            detail-type:\n              - request.history\n\n\nresources:\n  Resources:\n    PeopleTable:\n      Type: \"AWS::DynamoDB::Table\"\n      Properties:\n        TableName: ${self:service}-${sls:stage}-PeopleTable\n        AttributeDefinitions:\n          - AttributeName: \"id\"\n            AttributeType: \"S\"\n          - AttributeName: \"status\"  \n            AttributeType: \"S\"\n        KeySchema:\n          - AttributeName: \"id\"\n            KeyType: \"HASH\"\n        BillingMode: PAY_PER_REQUEST \n        TimeToLiveSpecification:\n          AttributeName: \"ttl\"\n          Enabled: true\n        GlobalSecondaryIndexes:\n          - IndexName: \"status-index\"\n            KeySchema:\n              - AttributeName: \"status\"\n                KeyType: \"HASH\"\n            Projection:\n              ProjectionType: \"ALL\"\n    HistoryTable:\n      Type: \"AWS::DynamoDB::Table\"\n      Properties:\n        TableName: ${self:service}-${sls:stage}-HistoryTable\n        AttributeDefinitions:\n          - AttributeName: \"requestId\"\n            AttributeType: \"S\"\n        KeySchema:\n          - AttributeName: \"requestId\"\n            KeyType: \"HASH\"\n        BillingMode: PAY_PER_REQUEST\n       \n    EventBus:\n      Type: \"AWS::Events::EventBus\"\n      Properties:\n        Name: ${self:provider.environment.EVENT_BUS_NAME}\n",
+    "command": [
+      "deploy"
+    ],
+    "options": {
+      "force": true
+    },
+    "error": null,
+    "params": {},
+    "machineId": "c07d249590af489fa050003007ade1d5",
+    "stage": "dev",
+    "accessKeyV2": "<REDACTED>",
+    "accessKeyV1": "<REDACTED>",
+    "orgId": "88759fe3-24fa-4e98-9a9a-7ed77c4cb8ac",
+    "orgName": "samcp",
+    "userId": "2NchW2b0SlZm6Jpk0X",
+    "dashboard": {
+      "isEnabledForService": false,
+      "requiredAuthentication": false,
+      "orgFeaturesInUse": null,
+      "orgObservabilityIntegrations": null,
+      "serviceAppId": null,
+      "serviceProvider": null,
+      "instanceParameters": null
+    },
+    "userName": "samcp",
+    "subscription": null,
+    "userEmail": "dreadmoreryed@gmail.com",
+    "serviceProviderAwsRegion": "us-east-2",
+    "serviceProviderAwsCredentials": "<REDACTED>",
+    "serviceProviderAwsAccountId": "058264497369",
+    "projectType": "traditional",
+    "versionSf": "4.4.7",
+    "serviceProviderAwsCfStackName": "reto-backend-dev",
+    "integrations": {},
+    "serviceUniqueId": "arn:aws:cloudformation:us-east-2:058264497369:stack/reto-backend-dev/e8db3dc0-9f7f-11ef-91df-067a5ce98e81",
+    "serviceProviderAwsCfStackId": "arn:aws:cloudformation:us-east-2:058264497369:stack/reto-backend-dev/e8db3dc0-9f7f-11ef-91df-067a5ce98e81",
+    "serviceProviderAwsCfStackCreated": "2024-11-10T16:21:58.966Z",
+    "serviceProviderAwsCfStackUpdated": "2024-11-11T04:50:47.535Z",
+    "serviceProviderAwsCfStackStatus": "UPDATE_COMPLETE",
+    "serviceProviderAwsCfStackOutputs": [
+      {
+        "OutputKey": "EventHandlerLambdaFunctionQualifiedArn",
+        "OutputValue": "arn:aws:lambda:us-east-2:058264497369:function:reto-backend-dev-eventHandler:12",
+        "Description": "Current Lambda function version",
+        "ExportName": "sls-reto-backend-dev-EventHandlerLambdaFunctionQualifiedArn"
+      },
+      {
+        "OutputKey": "ApiLambdaFunctionQualifiedArn",
+        "OutputValue": "arn:aws:lambda:us-east-2:058264497369:function:reto-backend-dev-api:17",
+        "Description": "Current Lambda function version",
+        "ExportName": "sls-reto-backend-dev-ApiLambdaFunctionQualifiedArn"
+      },
+      {
+        "OutputKey": "ServiceEndpoint",
+        "OutputValue": "https://t8r27zxz09.execute-api.us-east-2.amazonaws.com/dev",
+        "Description": "URL of the service endpoint",
+        "ExportName": "sls-reto-backend-dev-ServiceEndpoint"
+      },
+      {
+        "OutputKey": "ServerlessDeploymentBucketName",
+        "OutputValue": "serverless-framework-deployments-us-east-2-5aaba69b-62a2",
+        "ExportName": "sls-reto-backend-dev-ServerlessDeploymentBucketName"
+      }
+    ]
+  }
+}
